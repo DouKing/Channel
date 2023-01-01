@@ -5,6 +5,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
+
 import UIKit
 
 extension UIViewController {
@@ -57,3 +59,4 @@ extension UIView {
     }
 }
 
+#endif

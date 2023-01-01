@@ -5,6 +5,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class ToastPresentationController: UIPresentationController {
@@ -26,3 +28,5 @@ public class ToastPresentationController: UIPresentationController {
         presentedView?.layer.cornerRadius = 12
     }
 }
+
+#endif

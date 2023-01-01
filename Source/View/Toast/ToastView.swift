@@ -5,6 +5,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class ToastView: UIView {
@@ -73,3 +75,5 @@ extension UIView {
         return frame
     }
 }
+
+#endif

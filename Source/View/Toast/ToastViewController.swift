@@ -5,6 +5,8 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
+
 import UIKit
 
 public class ToastViewController: UIViewController {
@@ -30,3 +32,5 @@ extension ToastViewController: UIViewControllerTransitioningDelegate {
         return ToastPresentationController(presentedViewController: presented, presenting: presenting)
     }
 }
+
+#endif
