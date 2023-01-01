@@ -135,7 +135,7 @@ extension UIColor {
 }
 
 extension UIColor {
-    class var random: UIColor {
+    public class var random: UIColor {
         let red = CGFloat(Int.random(in: 0...255)) / 255
         let green = CGFloat(Int.random(in: 0...255)) / 255
         let blue = CGFloat(Int.random(in: 0...255)) / 255
