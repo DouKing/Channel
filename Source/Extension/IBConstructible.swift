@@ -2,17 +2,17 @@
 
 import UIKit
 
-protocol IBConstructible: AnyObject {
+public protocol IBConstructible: AnyObject {
   static var nibName: String { get }
   static var bundle: Bundle { get }
 }
 
 extension IBConstructible {
-  static var nibName: String {
+  public static var nibName: String {
     return String(describing: Self.self)
   }
 
-  static var bundle: Bundle {
+  public static var bundle: Bundle {
     return Bundle(for: Self.self)
   }
 }
@@ -28,7 +28,7 @@ extension IBConstructible where Self: UIViewController {
 }
 
 extension IBConstructible where Self: UIView {
-  static var fromNib: Self {
+  public static var fromNib: Self {
     let xib = UINib(nibName: nibName, bundle: bundle)
     guard let view = xib.instantiate(withOwner: nil, options: nil).first as? Self else {
       fatalError("Missing view in \(nibName).xib")
@@ -36,5 +36,8 @@ extension IBConstructible where Self: UIView {
     return view
   }
 }
+
+extension UIView: IBConstructible {}
+extension UIViewController: IBConstructible {}
 
 #endif
