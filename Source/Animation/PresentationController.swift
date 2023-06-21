@@ -121,17 +121,21 @@ func animateWithKeyboard(
     let curveValue = userInfo[curveKey] as? Int ?? 7
     let curve = UIView.AnimationCurve(rawValue: curveValue) ?? .easeInOut
     
-    // Create a property animator to manage the animation
-    let animator = UIViewPropertyAnimator(
-        duration: duration,
-        curve: curve
-    ) {
-        // Perform the necessary animation layout updates
+    if duration == 0 {
         animations?(keyboardFrameValue.cgRectValue)
+    } else {
+        // Create a property animator to manage the animation
+        let animator = UIViewPropertyAnimator(
+            duration: duration,
+            curve: curve
+        ) {
+            // Perform the necessary animation layout updates
+            animations?(keyboardFrameValue.cgRectValue)
+        }
+        
+        // Start the animation
+        animator.startAnimation()
     }
-    
-    // Start the animation
-    animator.startAnimation()
 }
 
 #endif

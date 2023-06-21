@@ -120,4 +120,28 @@ extension UIView {
     }
 }
 
+extension UIView {
+    public class SizeMaker {
+        typealias Size = (NSLayoutDimension, NSLayoutDimension)
+        let size: Size
+        unowned let view: UIView
+        
+        init(size: Size, view: UIView) {
+            self.size = size
+            self.view = view
+        }
+        
+        public func constraint(equalToConstant c: CGSize) -> [NSLayoutConstraint] {
+            return [
+                self.size.0.constraint(equalToConstant: c.width),
+                self.size.1.constraint(equalToConstant: c.height)
+            ]
+        }
+    }
+    
+    public var sizeAnchor: SizeMaker {
+        SizeMaker(size: (widthAnchor, heightAnchor), view: self)
+    }
+}
+
 #endif
