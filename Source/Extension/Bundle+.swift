@@ -11,4 +11,8 @@ extension Bundle {
     public var shortVersion: String? {
         infoDictionary?["CFBundleShortVersionString"] as? String
     }
+    
+    public var buildVersion: String? {
+        infoDictionary?["CFBundleVersion"] as? String
+    }
 }
