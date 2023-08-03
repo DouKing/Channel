@@ -136,10 +136,17 @@ extension UIColor {
 
 extension UIColor {
     public class var random: UIColor {
-        let red = CGFloat(Int.random(in: 0...255)) / 255
-        let green = CGFloat(Int.random(in: 0...255)) / 255
-        let blue = CGFloat(Int.random(in: 0...255)) / 255
+        let red = CGFloat.random(in: 0...1)
+        let green = CGFloat.random(in: 0...1)
+        let blue = CGFloat.random(in: 0...1)
         return UIColor(red: red, green: green, blue: blue, alpha: 1)
+    }
+    
+    public class func random(alpha: CGFloat = 1.0) -> UIColor {
+        let r = CGFloat.random(in: 0...1)
+        let g = CGFloat.random(in: 0...1)
+        let b = CGFloat.random(in: 0...1)
+        return UIColor(red: r, green: g, blue: b, alpha: alpha)
     }
 }
 
