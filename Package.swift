@@ -12,6 +12,9 @@ let package = Package(
         .library(name: "Channel", targets: ["Channel"])
     ],
     targets: [
-        .target(name: "Channel", path: "Source")
+        .target(name: "Channel", path: "Source"),
+        .testTarget(name: "ChannelTests",
+                    dependencies: ["Channel"],
+                    path: "Tests"),
     ]
 )
