@@ -144,18 +144,23 @@ extension FFT where State == FFTState.Processed {
         self.config.amplitudes
     }
     
-    public func present() -> FFT<FFTState.Presented> {
+    public func present(maxAmplitude: Float = 0.0,
+                        minAmplitude: Float = -70.0,
+                        referenceValueForFFT: Float = 12.0) -> FFT<FFTState.Presented> {
         var config = self.config
-        config.amplitudes = self.calculateAmplitudes(self.fftDatas)
+        config.amplitudes = self.calculateAmplitudes(self.fftDatas,
+                                                     maxAmplitude: maxAmplitude, 
+                                                     minAmplitude: minAmplitude,
+                                                     referenceValueForFFT: referenceValueForFFT)
         
         return FFT<FFTState.Presented>(config)
     }
     
     private func calculateAmplitudes(
         _ fftFloats: [[Float]],
-        maxAmplitude: Float = 0.0,
-        minAmplitude: Float = -70.0,
-        referenceValueForFFT: Float = 12.0
+        maxAmplitude: Float,
+        minAmplitude: Float,
+        referenceValueForFFT: Float
     ) -> [[Float]] {
         var referenceValueForFFT = referenceValueForFFT
         
@@ -239,19 +244,19 @@ public enum FFTModel {
     }
 }
 
-// MARK: - FFT data Cache Help
+// MARK: - FFT data Smooth Help
 
-public struct FFTCache {
+public struct FFTHelper {
     private var datas: [[Float]] = []
     
-    public mutating func reduce(_ fftDatas: [[Float]]) -> [[Float]] {
+    public mutating func smooth(_ amplitudes: [[Float]]) -> [[Float]] {
         if self.datas.isEmpty {
-            for values in fftDatas {
+            for values in amplitudes {
                 self.datas.append([Float](repeating: 0, count: values.count))
             }
         }
         
-        for (i, amplitudes) in fftDatas.enumerated() {
+        for (i, amplitudes) in amplitudes.enumerated() {
             let spectrum = highlightWaveform(spectrum: amplitudes.map { $0.isNaN ? 0.0 : $0 })
             
             let spectrumSmooth: Float = 0.65
