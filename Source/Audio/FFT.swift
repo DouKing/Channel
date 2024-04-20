@@ -248,6 +248,9 @@ public enum FFTModel {
 
 public struct FFTHelper {
     private var datas: [[Float]] = []
+    public init() {
+        self.datas = []
+    }
     
     public mutating func smooth(_ amplitudes: [[Float]]) -> [[Float]] {
         if self.datas.isEmpty {
