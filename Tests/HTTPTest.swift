@@ -1,14 +1,14 @@
 //===----------------------------------------------------------*- Swift -*-===//
 //
-// Created by Yikai Wu on 2024/3/28.
-// Copyright © 2024 Yikai Wu. All rights reserved.
+// Created by wuyikai on 2024/5/6.
+// Copyright © 2024 wuyikai. All rights reserved.
 //
 //===----------------------------------------------------------------------===//
 
 import XCTest
 import Channel
 
-final class AmplitudesTest: XCTestCase {
+final class HTTPTest: XCTestCase {
 
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -18,15 +18,12 @@ final class AmplitudesTest: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    func testExample() async throws {
-        var mockFloats = [Float]()
-        for _ in 0...65 {
-            mockFloats.append(Float.random(in: 0...0.1))
-        }
+    func testURLEncode() throws {
+        let encoder = URLEncodedFormEncoder()
         
-        let amplitudes = await Channel.calculateAmplitudes(mockFloats)
-        
-        XCTAssertEqual(mockFloats.count, amplitudes.count)
+        let data: String = try! encoder.encode(["a": 1, "b": true, "c": [2, 3]])
+        print(data)
+        XCTAssertEqual(data, "a=1&b=1&c%5B%5D=2&c%5B%5D=3")
     }
 
     func testPerformanceExample() throws {

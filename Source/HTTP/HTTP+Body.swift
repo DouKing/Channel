@@ -1,8 +1,12 @@
 //===----------------------------------------------------------*- Swift -*-===//
 //
-// Created by Yikai Wu on 2024/4/4.
-// Copyright © 2024 Yikai Wu. All rights reserved.
+// Created by wuyikai on 2024/5/6.
+// Copyright © 2024 wuyikai. All rights reserved.
 //
 //===----------------------------------------------------------------------===//
 
 import Foundation
+
+extension HTTP {
+    
+}
