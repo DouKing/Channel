@@ -5,6 +5,7 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
 import UIKit
 
 public protocol Reusable {
@@ -31,3 +32,5 @@ extension UITableViewHeaderFooterView {
         NSStringFromClass(self.self)
     }
 }
+
+#endif

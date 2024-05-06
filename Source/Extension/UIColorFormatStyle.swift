@@ -5,15 +5,18 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
 import Foundation
 import UIKit.UIColor
 
+@available(iOS 15.0, *)
 public struct UIColorParseStrategy: ParseStrategy {
     public func parse(_ value: String) throws -> UIColor {
         return value.color()
     }
 }
 
+@available(iOS 15.0, *)
 public struct UIColorFormatStyle: ParseableFormatStyle {
     private let locale: Locale
     private var alpha: Bool
@@ -41,12 +44,20 @@ public struct UIColorFormatStyle: ParseableFormatStyle {
     }
 }
 
+@available(iOS 15.0, *)
 extension UIColorFormatStyle {
     public func alpha(_ alpha: Bool) -> Self {
         guard self.alpha != alpha else { return self }
         var result = self
         result.alpha = alpha
         return result
+    }
+}
+
+@available(iOS 15.0, *)
+extension FormatStyle where Self == UIColorFormatStyle {
+    public static var uiColor: UIColorFormatStyle {
+        UIColorFormatStyle()
     }
 }
 
@@ -62,9 +73,4 @@ extension UIColor {
     }
 }
 
-@available(iOS 15.0, *)
-extension FormatStyle where Self == UIColorFormatStyle {
-    public static var uiColor: UIColorFormatStyle {
-        UIColorFormatStyle()
-    }
-}
+#endif

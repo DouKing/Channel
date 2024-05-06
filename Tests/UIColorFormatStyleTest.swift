@@ -5,9 +5,11 @@
 //
 //===----------------------------------------------------------------------===//
 
+#if canImport(UIKit)
 import XCTest
 import Channel
 
+@available(iOS 15.0, *)
 final class UIColorFormatStyleTest: XCTestCase {
 
     override func setUpWithError() throws {
@@ -38,3 +40,5 @@ final class UIColorFormatStyleTest: XCTestCase {
     }
 
 }
+
+#endif
