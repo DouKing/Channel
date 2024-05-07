@@ -8,6 +8,26 @@
 import XCTest
 import Channel
 
+struct QueryParameter: Encodable, HTTP.Parameterable {
+    var age = 10
+    var foo = "foo"
+}
+
+let queryJSON: HTTP.JSONObject = [
+    "age": 10,
+    "foo": "foo"
+]
+
+struct BodyParameter: Encodable, HTTP.Parameterable {
+    var bar = "bar"
+    var list = [1, 2, 3]
+}
+
+let bodyJSON: HTTP.JSONObject = [
+    "bar": "bar",
+    "list": [1, 2, 3]
+]
+
 final class HTTPTest: XCTestCase {
 
     override func setUpWithError() throws {
@@ -26,11 +46,37 @@ final class HTTPTest: XCTestCase {
         XCTAssertEqual(data, "a=1&b=1&c%5B%5D=2&c%5B%5D=3")
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testHTTPParameters() throws {
+        var request = URLRequest(url: URL(string: "https://nonexistent-domain.org")!, method: .post)
+        
+        let query = HTTP.URLFormData(parameterable: QueryParameter())
+        try request.setQuery(query)
+        
+        print(request.url!)
+        XCTAssertEqual(request.url!.absoluteString, "https://nonexistent-domain.org?age=10&foo=foo")
+        
+        let body = HTTP.JSONData.init(parameterable: BodyParameter())
+        try request.setBody(body)
+        
+        let str = String(data: request.httpBody!, encoding: .utf8)!
+        print(str) // {"bar":"bar","list":[1,2,3]}
+        XCTAssertEqual(str, "{\"bar\":\"bar\",\"list\":[1,2,3]}")
     }
 
+    func testHTTPJSONParameters() throws {
+        var request = URLRequest(url: URL(string: "https://nonexistent-domain.org")!, method: .post)
+        
+        let query = HTTP.URLFormData(parameterable: queryJSON)
+        try request.setQuery(query)
+        
+        print(request.url!)
+        XCTAssertEqual(request.url!.absoluteString, "https://nonexistent-domain.org?age=10&foo=foo")
+        
+        let body = HTTP.JSONData.init(parameterable: bodyJSON)
+        try request.setBody(body)
+        
+        let str = String(data: request.httpBody!, encoding: .utf8)!
+        print(str) // {"bar":"bar","list":[1,2,3]}
+        XCTAssertEqual(str, "{\"bar\":\"bar\",\"list\":[1,2,3]}")
+    }
 }

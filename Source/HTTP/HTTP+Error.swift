@@ -40,12 +40,23 @@ extension HTTP {
         
         /// The underlying reason the `.parameterEncodingFailed` error occurred.
         public enum ParameterEncodingFailureReason {
-            /// The `URLRequest` did not have a `URL` to encode.
-            case missingURL
+            /// Possible missing components.
+            public enum RequiredComponent {
+                /// The `URL` was missing or unable to be extracted from the passed `URLRequest` or during encoding.
+                case url
+                /// The `HTTPMethod` could not be extracted from the passed `URLRequest`.
+                case httpMethod(rawValue: String)
+            }
+
             /// JSON serialization failed with an underlying system error during the encoding process.
             case jsonEncodingFailed(error: Swift.Error)
             /// Custom parameter encoding failed due to the associated `Error`.
             case customEncodingFailed(error: Swift.Error)
+            
+            /// The underlying encoder failed with the associated error.
+            case encoderFailed(error: Swift.Error)
+            /// A `RequiredComponent` was missing during encoding.
+            case missingRequiredComponent(RequiredComponent)
         }
         
         public struct UnexpectedInputStreamLength: Swift.Error {
