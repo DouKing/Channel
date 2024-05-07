@@ -35,19 +35,6 @@ import Foundation
 ///
 /// This type is largely based on Vapor's [`url-encoded-form`](https://github.com/vapor/url-encoded-form) project.
 public final class URLEncodedFormEncoder {
-    /// `URLEncodedFormEncoder` error.
-    public enum Error: Swift.Error {
-        /// An invalid root object was created by the encoder. Only keyed values are valid.
-        case invalidRootObject(String)
-
-        var localizedDescription: String {
-            switch self {
-            case let .invalidRootObject(object):
-                return "URLEncodedFormEncoder requires keyed root object. Received \(object) instead."
-            }
-        }
-    }
-
     /// Whether or not to sort the encoded key value pairs.
     ///
     /// - Note: This setting ensures a consistent ordering for all encodings of the same parameters. When set to `false`,
@@ -132,7 +119,7 @@ extension URLEncodedFormEncoder {
         let component: URLEncodedFormComponent = try encode(value)
 
         guard case let .object(object) = component else {
-            throw Error.invalidRootObject("\(component)")
+            throw URLEncoding.Error.invalidRootObject("\(component)")
         }
 
         let serializer = URLEncodedFormSerializer(alphabetizeKeyValuePairs: alphabetizeKeyValuePairs,
@@ -178,7 +165,7 @@ extension URLEncodedFormEncoder {
             return .object(objs)
         }
         
-        throw Error.invalidRootObject("\(any)")
+        throw URLEncoding.Error.invalidRootObject("\(any)")
     }
 
     /// Encodes the `value` as a URL form encoded `String`.
@@ -189,13 +176,13 @@ extension URLEncodedFormEncoder {
     /// - Throws:          An `Error` or `EncodingError` instance if encoding fails.
     public func encode(_ value: [String: Any]) throws -> String {
         guard JSONSerialization.isValidJSONObject(value) else {
-            throw Error.invalidRootObject("\(value)")
+            throw URLEncoding.Error.invalidRootObject("\(value)")
         }
 
         let component = try queryComponent(value)
         
         guard case let .object(object) = component else {
-            throw Error.invalidRootObject("\(component)")
+            throw URLEncoding.Error.invalidRootObject("\(component)")
         }
 
         let serializer = URLEncodedFormSerializer(alphabetizeKeyValuePairs: alphabetizeKeyValuePairs,

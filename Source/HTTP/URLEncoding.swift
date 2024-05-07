@@ -8,6 +8,19 @@
 import Foundation
 
 public struct URLEncoding {
+    /// `URLEncodedFormEncoder` error.
+    public enum Error: Swift.Error {
+        /// An invalid root object was created by the encoder. Only keyed values are valid.
+        case invalidRootObject(String)
+
+        var localizedDescription: String {
+            switch self {
+            case let .invalidRootObject(object):
+                return "URLEncodedFormEncoder requires keyed root object. Received \(object) instead."
+            }
+        }
+    }
+
     /// Encoding to use for `Array` values.
     public enum ArrayEncoding {
         /// An empty set of square brackets ("[]") are appended to the key for every value. This is the default encoding.

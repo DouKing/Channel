@@ -35,12 +35,58 @@ extension HTTP.Header: CustomStringConvertible {
 }
 
 extension HTTP.Header {
+    public struct Name: Hashable, Equatable, RawRepresentable, @unchecked Sendable {
+        public let rawValue: String
+        
+        public init(rawValue: String) {
+            self.rawValue = rawValue
+        }
+        
+        public init(_ rawValue: String) {
+            self.rawValue = rawValue
+        }
+    }
+    
+    /// Creates an instance from the given `name` and `value`.
+    ///
+    /// - Parameters:
+    ///   - name:  The name of the header.
+    ///   - value: The value of the header.
+    public init(name: Name, value: String) {
+        self.init(name: name.rawValue, value: value)
+    }
+}
+
+extension HTTP.Header.Name {
+    /// Accept
+    public static var accept = HTTP.Header.Name("Accept")
+    /// Accept-Charset
+    public static var acceptCharset = HTTP.Header.Name("Accept-Charset")
+    /// Accept-Language
+    public static var acceptLanguage = HTTP.Header.Name("Accept-Language")
+    /// Accept-Encoding
+    public static var acceptEncoding = HTTP.Header.Name("Accept-Encoding")
+    /// Authorization
+    public static var authorization = HTTP.Header.Name("Authorization")
+    /// Content-Disposition
+    public static var contentDisposition = HTTP.Header.Name("Content-Disposition")
+    /// Content-Encoding
+    public static var contentEncoding = HTTP.Header.Name("Content-Encoding")
+    /// Content-Type
+    public static var contentType = HTTP.Header.Name("Content-Type")
+    /// User-Agent
+    public static var userAgent = HTTP.Header.Name("User-Agent")
+    /// Sec-WebSocket-Protocol
+    public static var websocketProtocol = HTTP.Header.Name("Sec-WebSocket-Protocol")
+}
+
+extension HTTP.Header {
     /// Returns an `Accept` header.
     ///
     /// - Parameter value: The `Accept` value.
     /// - Returns:         The header.
     public static func accept(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Accept", value: value)
+        HTTP.Header(name: .accept, value: value)
     }
     
     /// Returns an `Accept-Charset` header.
@@ -48,7 +94,7 @@ extension HTTP.Header {
     /// - Parameter value: The `Accept-Charset` value.
     /// - Returns:         The header.
     public static func acceptCharset(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Accept-Charset", value: value)
+        HTTP.Header(name: .acceptCharset, value: value)
     }
     
     /// Returns an `Accept-Language` header.
@@ -60,7 +106,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header.
     public static func acceptLanguage(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Accept-Language", value: value)
+        HTTP.Header(name: .acceptLanguage, value: value)
     }
     
     /// Returns an `Accept-Encoding` header.
@@ -72,7 +118,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header
     public static func acceptEncoding(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Accept-Encoding", value: value)
+        HTTP.Header(name: .acceptEncoding, value: value)
     }
     
     /// Returns a `Basic` `Authorization` header using the `username` and `password` provided.
@@ -107,7 +153,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header.
     public static func authorization(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Authorization", value: value)
+        HTTP.Header(name: .authorization, value: value)
     }
     
     /// Returns a `Content-Disposition` header.
@@ -116,7 +162,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header.
     public static func contentDisposition(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Content-Disposition", value: value)
+        HTTP.Header(name: .contentDisposition, value: value)
     }
     
     /// Returns a `Content-Encoding` header.
@@ -125,7 +171,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header.
     public static func contentEncoding(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Content-Encoding", value: value)
+        HTTP.Header(name: .contentEncoding, value: value)
     }
     
     /// Returns a `Content-Type` header.
@@ -137,7 +183,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header.
     public static func contentType(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Content-Type", value: value)
+        HTTP.Header(name: .contentType, value: value)
     }
     
     /// Returns a `User-Agent` header.
@@ -146,7 +192,7 @@ extension HTTP.Header {
     ///
     /// - Returns:         The header.
     public static func userAgent(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "User-Agent", value: value)
+        HTTP.Header(name: .userAgent, value: value)
     }
     
     /// Returns a `Sec-WebSocket-Protocol` header.
@@ -154,7 +200,7 @@ extension HTTP.Header {
     /// - Parameter value: The `Sec-WebSocket-Protocol` value.
     /// - Returns:         The header.
     public static func websocketProtocol(_ value: String) -> HTTP.Header {
-        HTTP.Header(name: "Sec-WebSocket-Protocol", value: value)
+        HTTP.Header(name: .websocketProtocol, value: value)
     }
 }
 
@@ -168,6 +214,15 @@ extension [HTTP.Header] {
         guard let index = index(of: name) else { return nil }
         
         return self[index].value
+    }
+    
+    /// Case-insensitively find a header's value by name.
+    ///
+    /// - Parameter name: The name of the header to search for, case-insensitively.
+    ///
+    /// - Returns:        The value of header, if it exists.
+    public func value(for name: HTTP.Header.Name) -> String? {
+        value(for: name.rawValue)
     }
     
     /// Case-insensitively access the header with the given name.
@@ -184,12 +239,35 @@ extension [HTTP.Header] {
         }
     }
     
+    /// Case-insensitively access the header with the given name.
+    ///
+    /// - Parameter name: The name of the header.
+    public subscript(_ name: HTTP.Header.Name) -> String? {
+        get { value(for: name) }
+        set {
+            if let value = newValue {
+                update(name: name, value: value)
+            } else {
+                remove(name: name)
+            }
+        }
+    }
+    
     /// Case-insensitively updates or appends an `HTTP.Header` into the instance using the provided `name` and `value`.
     ///
     /// - Parameters:
     ///   - name:  The `HTTP.Header` name.
     ///   - value: The `HTTP.Header` value.
     public mutating func update(name: String, value: String) {
+        update(HTTP.Header(name: name, value: value))
+    }
+    
+    /// Case-insensitively updates or appends an `HTTP.Header` into the instance using the provided `name` and `value`.
+    ///
+    /// - Parameters:
+    ///   - name:  The `HTTP.Header` name.
+    ///   - value: The `HTTP.Header` value.
+    public mutating func update(name: HTTP.Header.Name, value: String) {
         update(HTTP.Header(name: name, value: value))
     }
     
@@ -212,6 +290,20 @@ extension [HTTP.Header] {
         guard let index = index(of: name) else { return }
         
         remove(at: index)
+    }
+    
+    /// Case-insensitively removes an `HTTP.Header`, if it exists, from the instance.
+    ///
+    /// - Parameter name: The name of the `HTTP.Header` to remove.
+    public mutating func remove(name: HTTP.Header.Name) {
+        guard let index = index(of: name) else { return }
+        
+        remove(at: index)
+    }
+    
+    /// Case-insensitively finds the index of an `HTTP.Header` with the provided name, if it exists.
+    func index(of name: HTTP.Header.Name) -> Int? {
+        return index(of: name.rawValue)
     }
     
     /// Case-insensitively finds the index of an `HTTP.Header` with the provided name, if it exists.
@@ -299,7 +391,7 @@ extension HTTP.Header {
             return "\(osName) \(versionString)"
         }()
         
-        let channelVersion = "Channel/\(1.0)"
+        let channelVersion = "\(ChannelInfo.name)/\(ChannelInfo.version)"
         
         let userAgent = "\(executable)/\(appVersion) (\(bundle); build:\(appBuild); \(osNameVersion)) \(channelVersion)"
         

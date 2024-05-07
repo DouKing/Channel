@@ -38,6 +38,16 @@ extension HTTP {
             case inputStreamReadFailed(error: Swift.Error)
         }
         
+        /// The underlying reason the `.parameterEncodingFailed` error occurred.
+        public enum ParameterEncodingFailureReason {
+            /// The `URLRequest` did not have a `URL` to encode.
+            case missingURL
+            /// JSON serialization failed with an underlying system error during the encoding process.
+            case jsonEncodingFailed(error: Swift.Error)
+            /// Custom parameter encoding failed due to the associated `Error`.
+            case customEncodingFailed(error: Swift.Error)
+        }
+        
         public struct UnexpectedInputStreamLength: Swift.Error {
             /// The expected byte count to read.
             public var bytesExpected: UInt64
@@ -45,6 +55,12 @@ extension HTTP {
             public var bytesRead: UInt64
         }
         
+        public enum JSONEncodingError: Swift.Error {
+            /// An invalid json object was created by JSONSerialization.
+            case invalidJSONObject
+        }
+        
         case multipartEncodingFailed(reason: MultipartEncodingFailureReason)
+        case parameterEncodingFailed(reason: ParameterEncodingFailureReason)
     }
 }

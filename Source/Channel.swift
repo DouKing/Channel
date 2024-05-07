@@ -14,4 +14,6 @@ import Foundation
 public enum ChannelInfo {
     /// Current Channel version.
     public static let version = "1.0"
+    /// Name
+    public static let name = "Channel"
 }
