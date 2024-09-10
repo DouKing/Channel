@@ -8,8 +8,8 @@
 import Foundation
 
 public struct Swizzle {
-    public func swizzleInstanceMethod(
-        originCls: AnyClass, originSelector: Selector, 
+    public static func swizzleInstanceMethod(
+        originCls: AnyClass, originSelector: Selector,
         swizzCls: AnyClass, swizzSelector: Selector
     ) {
         guard let originMethod = class_getInstanceMethod(originCls, originSelector),
