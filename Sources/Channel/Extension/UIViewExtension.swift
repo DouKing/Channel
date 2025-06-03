@@ -8,6 +8,7 @@
 #if canImport(UIKit)
 
 import UIKit
+import Channel_Private
 
 extension UIView {
     public func setCornerRadii(_ cornerRadii: CGSize, forRoundingCorners corners: UIRectCorner) {
@@ -16,6 +17,10 @@ extension UIView {
         maskLayer.frame = bounds
         maskLayer.path = maskPath.cgPath
         layer.mask = maskLayer
+    }
+    
+    public func disableCapture() {
+        self.layer.disableCapture()
     }
 }
 
