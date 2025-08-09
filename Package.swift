@@ -9,11 +9,19 @@ let package = Package(
                 .tvOS(.v13),
                 .watchOS(.v6)],
     products: [
-        .library(name: "Channel", targets: ["Channel"])
+        .library(name: "Channel", targets: ["Channel"]),
+        .library(name: "ChannelHTTP", targets: ["HTTP"]),
+        .library(name: "ChannelUtils", targets: ["Utils"]),
     ],
     targets: [
+        .target(name: "HTTP"),
+        .target(name: "Utils"),
+        
         .target(name: "Channel_Private"),
-        .target(name: "Channel", dependencies: ["Channel_Private"]),
+        .target(name: "Channel", dependencies: [
+            "Channel_Private",
+            "Utils",
+        ]),
         .testTarget(
             name: "ChannelTests",
             dependencies: ["Channel"],
